@@ -39,7 +39,7 @@ function updateAccessoriesList(id) {
                         + `<div class="col-3">${accessory.description}</div>`
                         + `<div class="col-1">${accessory.quantity}</div>`
                         + `<div class="col-2">${accessory.thirdParty}</div>`
-                        + `<div class="col-2 small"><img width="100" height="100" src="${accessory.imageURL}"></div>`
+                        + `<div class="col-2 small"><a href="${accessory.imageURL}" target=”_blank”><img width="120" height="90" src="${accessory.imageURL}"></a></div>`
                         + `<div class="col-3 text-right">`
                         + `<a class="btn btn-sm btn-success"  href="/client/game.html?id=${accessory.id}">Edit</a>`
                         +`</div>`

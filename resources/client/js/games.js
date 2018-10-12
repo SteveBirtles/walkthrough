@@ -39,7 +39,7 @@ function updateGamesList(id) {
                                     + `<div class="col-3">${game.name}</div>`
                                     + `<div class="col-1">${game.year}</div>`
                                     + `<div class="col-2">${game.sales}</div>`
-                                    + `<div class="col-2 small"><img width="100" height="100" src="${game.imageURL}"></div>`
+                                    + `<div class="col-2 small"><a href="${game.imageURL}" target=”_blank”><img width="120" height="90" src="${game.imageURL}"></a></div>`
                                     + `<div class="col-3 text-right">`
                                         + `<a class="btn btn-sm btn-success"  href="/client/game.html?id=${game.id}">Edit</a>`
                                     +`</div>`
