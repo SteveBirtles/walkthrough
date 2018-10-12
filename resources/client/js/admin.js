@@ -1,8 +1,8 @@
 function resetLoginForm() {
 
-    let destination = "/client/game.html";
-
-    checkLogin(true);
+    if (Cookies.get('destination') === undefined) {
+        window.location.href = "/client/index.html";
+    }
 
     const loginForm = $('#loginForm');
     loginForm.submit(event => {
@@ -16,20 +16,17 @@ function resetLoginForm() {
                     alert(response);
                 } else {
                     Cookies.set("sessionToken", response);
-                    window.location.href = destination;
+                    window.location.href = Cookies.get('destination');
                 }
             }
         });
     });
 
-    $("#logout").click(event => {
-        Cookies.remove("sessionToken");
-        window.location.href = "/client/index.html";
-    });
 }
 
-function checkLogin(onLoginPage) {
+function checkLogin() {
 
+    let currentPage = window.location.pathname;
     let token = Cookies.get("sessionToken");
 
     if (token !== undefined) {
@@ -37,13 +34,17 @@ function checkLogin(onLoginPage) {
             url: '/admin/check',
             type: 'GET',
             success: username => {
-                if (onLoginPage) {
-                    $('#currentUser').text("Logged in as " + username);
-                    $('#logout').css('visibility', 'visible');
+                if (username === "") {
+                    if (currentPage !== '/client/login.html') {
+                        window.location.href = '/client/login.html';
+                    }
                 }
-                return username;
             }
         });
+    } else {
+        if (currentPage !== '/client/login.html') {
+            window.location.href = '/client/login.html';
+        }
     }
 }
 

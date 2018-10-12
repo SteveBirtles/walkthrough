@@ -12,16 +12,46 @@
     <script src="/client/js/popper.min.js"></script>
     <script src="/client/js/bootstrap.min.js"></script>
     <script src="/client/js/js.cookie.min.js"></script>
+    <script src="/client/js/querystring.js"></script>
 
     <link href="/client/css/bootstrap.min.css" rel="stylesheet">
 
+    <script src="/client/js/admin.js"></script>
+    <script src="/client/js/game.js"></script>
+
 </head>
 
-<body class="bg-dark">
+<body class="bg-dark" onload="pageLoad()">
 
-<div class="container bg-white">
+<div class="container bg-white pb-4">
 
-    <h1 class="text-center">GAME EDIT PAGE</h1>
+    <div class="py-4 float-right"><button class="btn btn-sm btn-warning" id="logout">Log out</button></div>
+    <div class="py-4"><a class="btn btn-sm btn-secondary" href="/client/index.html">Back to consoles</a></div>
+
+    <h1 class="text-center p-4">Game Edit</h1>
+
+    <div class="float-right"><button class="btn btn-danger">Delete</button></div>
+
+    <form>
+        <div class="form-group">
+            <label class="pr-4">Name
+                <input type="text" class="form-control" id="name">
+            </label>
+            <label class="pr-4">Sales
+                <input type="text" class="form-control" id="sales">
+            </label>
+            <label class="pr-4">Year
+                <input type="text" class="form-control" id="year">
+            </label>
+        </div>
+        <div class="form-group">
+            <label class="pr-4">Image URL
+                <input type="text" class="form-control" id="imageURL">
+            </label>
+            <div class="float-right"><button type="submit" class="btn btn-success">Save</button></div>
+        </div>
+    </form>
+
 
 </div>
 

@@ -10,6 +10,7 @@ import server.models.services.ManufacturerService;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -54,5 +55,30 @@ public class ConsoleController {
         }
 
     }
-    
+
+    @GET
+    @Path("get/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getConsole(@PathParam("id") int id) {
+
+        Console c = ConsoleService.selectById(id);
+        if (c != null) {
+
+            Manufacturer m = ManufacturerService.selectById(c.getManufacturerid());
+
+            JSONObject cj = c.toJSON();
+
+            cj.put("manufacturer", m.getName());
+
+            return cj.toString();
+
+        } else {
+
+            return "{'error': 'Can't find console with id " + id + "'}";
+
+        }
+
+    }
+
+
 }

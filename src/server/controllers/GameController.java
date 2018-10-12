@@ -55,4 +55,25 @@ public class GameController {
 
     }
 
+
+    @GET
+    @Path("get/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getGame(@PathParam("id") int id) {
+
+        Game g = GameService.selectById(id);
+        if (g != null) {
+
+            JSONObject cj = g.toJSON();
+            return cj.toString();
+
+        } else {
+
+            return "{'error': 'Can't find game with id " + id + "'}";
+
+        }
+
+    }
+
+
 }

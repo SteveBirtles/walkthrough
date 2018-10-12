@@ -1,17 +1,3 @@
-function getQueryStringParameters() {
-    let params = [];
-    let q = document.URL.split('?')[1];
-    if (q !== undefined) {
-        q = q.split('&');
-        for (let i = 0; i < q.length; i++) {
-            let bits = q[i].split('=');
-            params.push(bits[1]);
-            params[bits[0]] = bits[1];
-        }
-    }
-    return params;
-}
-
 function updateAccessoriesList(id) {
 
     $.ajax({
@@ -41,7 +27,7 @@ function updateAccessoriesList(id) {
                         + `<div class="col-2">${accessory.thirdParty}</div>`
                         + `<div class="col-2 small"><a href="${accessory.imageURL}" target=”_blank”><img width="120" height="90" src="${accessory.imageURL}"></a></div>`
                         + `<div class="col-3 text-right">`
-                        + `<a class="btn btn-sm btn-success"  href="/client/game.html?id=${accessory.id}">Edit</a>`
+                        + `<a class="btn btn-sm btn-success"  href="/client/accessory.html?id=${accessory.id}">Edit</a>`
                         +`</div>`
                         + `</div>`;
                 }

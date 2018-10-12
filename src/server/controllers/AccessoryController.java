@@ -3,14 +3,8 @@ package server.controllers;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import server.Logger;
-import server.models.Accessory;
-import server.models.Console;
-import server.models.Game;
-import server.models.Manufacturer;
-import server.models.services.AccessoryService;
-import server.models.services.ConsoleService;
-import server.models.services.GameService;
-import server.models.services.ManufacturerService;
+import server.models.*;
+import server.models.services.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -56,5 +50,31 @@ public class AccessoryController {
         }
 
     }
+
+
+    @GET
+    @Path("get/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAccessory(@PathParam("id") int id) {
+
+        Accessory a = AccessoryService.selectById(id);
+        if (a != null) {
+
+            Category c = CategoryService.selectById(a.getCategoryId());
+
+            JSONObject cj = a.toJSON();
+
+            cj.put("category", c.getName());
+
+            return cj.toString();
+
+        } else {
+
+            return "{'error': 'Can't find accessory with id " + id + "'}";
+
+        }
+
+    }
+
 
 }
