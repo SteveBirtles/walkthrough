@@ -16,7 +16,7 @@ public class AccessoryController {
     @GET
     @Path("list/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public String listGames(@PathParam("id") int id) {
+    public String listAccessories(@PathParam("id") int id) {
 
         Logger.log(Integer.toString(id));
 

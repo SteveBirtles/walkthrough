@@ -25,28 +25,32 @@
 
 <div class="container bg-white pb-4">
 
-    <div class="py-4 float-right"><button class="btn btn-sm btn-warning" id="logout">Log out</button></div>
-    <div class="py-4"><a class="btn btn-sm btn-secondary" href="/client/index.html">Back to consoles</a></div>
+    <div class="py-4 float-right">
+        <button class="btn btn-secondary" id="logout">Log out</button>
+    </div>
 
     <h1 class="text-center p-4">Game Edit</h1>
 
-    <div class="float-right"><button class="btn btn-danger">Delete</button></div>
+    <div class="float-right">
+        <button class="btn btn-danger" id="delete" style="visibility: hidden">Delete</button>
+    </div>
 
-    <form>
+    <form id="gameForm">
         <div class="form-group">
+            <input type="hidden" name="consoleId">
             <label class="pr-4">Name
-                <input type="text" class="form-control" id="name">
+                <input type="text" class="form-control" name="name">
             </label>
             <label class="pr-4">Sales
-                <input type="text" class="form-control" id="sales">
+                <input type="text" class="form-control" name="sales">
             </label>
             <label class="pr-4">Year
-                <input type="text" class="form-control" id="year">
+                <input type="text" class="form-control" name="year">
             </label>
         </div>
         <div class="form-group">
             <label class="pr-4">Image URL
-                <input type="text" class="form-control" id="imageURL">
+                <input type="text" class="form-control" name="imageURL">
             </label>
             <div class="float-right"><button type="submit" class="btn btn-success">Save</button></div>
         </div>

@@ -14,12 +14,17 @@ function pageLoad() {
 
     let params = getQueryStringParameters();
     if (params['id'] !== undefined) {
-        id = params['id'];
+        id = parseInt(params['id']);
     }
 
     if (id !== -1) {
+        $('#delete').css('visibility', 'visible');
         loadGame();
+    } else {
+        $("[name='consoleId']").val(Cookies.get('consoleId'));
     }
+
+    resetForm();
 
 }
 
@@ -33,12 +38,36 @@ function loadGame() {
             if (gameDetails.hasOwnProperty('error')) {
                 alert(gameDetails.error);
             } else {
-                $('#name').val(gameDetails.name);
-                $('#year').val(gameDetails.year);
-                $('#sales').val(gameDetails.sales);
-                $('#imageURL').val(gameDetails.imageURL);
+                $("[name='consoleId']").val(gameDetails.consoleId);
+                $("[name='name']").val(gameDetails.name);
+                $("[name='year']").val(gameDetails.year);
+                $("[name='sales']").val(gameDetails.sales);
+                $("[name='imageURL']").val(gameDetails.imageURL);
             }
         }
     });
 
+}
+
+
+function resetForm() {
+
+    const form = $('#gameForm');
+
+    form.unbind("submit");
+    form.submit(event => {
+        event.preventDefault();
+        $.ajax({
+            url: '/game/save/' + id,
+            type: 'POST',
+            data: form.serialize(),
+            success: response => {
+                if (response === 'OK') {
+                    window.location.href = Cookies.get("lastGamesURL");
+                } else {
+                    alert(response);
+                }
+            }
+        });
+    });
 }

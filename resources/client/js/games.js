@@ -42,7 +42,6 @@ function updateGamesList(id) {
 
 }
 
-
 function pageLoad() {
 
     let params = getQueryStringParameters();
@@ -50,5 +49,8 @@ function pageLoad() {
     $('#console').text(decodeURI(params['name']));
 
     updateGamesList(params['id']);
+
+    Cookies.set("lastGamesURL", window.location.href);
+    Cookies.set("consoleId", params['id']);
 
 }
