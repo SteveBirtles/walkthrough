@@ -23,6 +23,11 @@ function pageLoad() {
     if (id !== -1) {
         loadAccessory();
         resetDeleteButton();
+    } else {
+        consoleId = Cookies.get('consoleId');
+        if (params['consoleId'] !== undefined) {
+            $("[name='consoleId']").val(params['consoleId']);
+        }
     }
 
     resetForm();
@@ -38,11 +43,13 @@ function loadAccessory() {
             if (accessoryDetails.hasOwnProperty('error')) {
                 alert(accessoryDetails.error);
             } else {
-                $('#category').val(accessoryDetails.category);
-                $('#description').val(accessoryDetails.description);
-                $('#imageURL').val(accessoryDetails.imageURL);
-                $('#quantity').val(accessoryDetails.quantity);
-                $('#thirdParty').prop("checked", accessoryDetails.thirdParty);
+                $("[name='consoleId']").val(accessoryDetails.consoleId);
+                $("[name='category']").val(accessoryDetails.category);
+                $("[name='description']").val(accessoryDetails.description);
+                $("[name='imageURL']").val(accessoryDetails.imageURL);
+                $("[name='quantity']").val(accessoryDetails.quantity);
+                $("[name='thirdParty']").prop("checked", accessoryDetails.thirdParty);
+            }
         }
     });
 
@@ -78,9 +85,8 @@ function resetDeleteButton() {
 
     $('#delete').click(event => {
         $.ajax({
-            url: '/accessory/delete',
+            url: '/accessory/delete/' + id,
             type: 'POST',
-            data: {"id": id},
             success: response => {
                 if (response === 'OK') {
                     window.location.href = $("#back").attr("href");

@@ -32,11 +32,11 @@ public class Category {
         this.name = name;
     }
 
-    public static ArrayList<Category> categorys = new ArrayList<>();
+    public static ArrayList<Category> categories = new ArrayList<>();
 
     public static int nextId() {
         int id = 0;
-        for (Category c: categorys) {
+        for (Category c: categories) {
             if (c.getId() > id) {
                 id = c.getId();
             }

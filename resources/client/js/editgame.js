@@ -84,9 +84,8 @@ function resetDeleteButton() {
 
     $('#delete').click(event => {
         $.ajax({
-            url: '/game/delete',
+            url: '/game/delete/' + id,
             type: 'POST',
-            data: {"id": id},
             success: response => {
                 if (response === 'OK') {
                     window.location.href = $("#back").attr("href");

@@ -3,11 +3,11 @@ package server.controllers;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import server.Logger;
-import server.models.Category;
 import server.models.Console;
 import server.models.Game;
-import server.models.Manufacturer;
-import server.models.services.*;
+import server.models.services.AdminService;
+import server.models.services.ConsoleService;
+import server.models.services.GameService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
@@ -37,7 +37,7 @@ public class GameController {
 
                 if (g.getConsoleId() == id) {
 
-                    if (g.getImageURL() == null) {
+                    if (g.getImageURL().equals("")) {
                         g.setImageURL("/client/img/none.png");
                     }
 
@@ -117,10 +117,9 @@ public class GameController {
     }
 
     @POST
-    @Path("delete")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Path("delete/{id}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String deleteGame(@FormParam("id") int id,
+    public String deleteGame(@PathParam("id") int id,
                                 @CookieParam("sessionToken") Cookie sessionCookie) {
 
         String currentUsername = AdminService.validateSessionCookie(sessionCookie);

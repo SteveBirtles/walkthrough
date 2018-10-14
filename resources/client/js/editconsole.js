@@ -38,14 +38,14 @@ function loadConsole() {
             if (consoleDetails.hasOwnProperty('error')) {
                 alert(consoleDetails.error);
             } else {
-                $('#name').val(consoleDetails.name);
-                $('#manufacturer').val(consoleDetails.manufacturer);
-                $('#imageURL').val(consoleDetails.imageURL);
-                $('#notes').val(consoleDetails.notes);
-                $('#year').val(consoleDetails.year);
-                $('#sales').val(consoleDetails.sales);
-                $('#mediaType').val(consoleDetails.mediaType);
-                $('#handheld').prop("checked", consoleDetails.handheld);
+                $("[name='name']").val(consoleDetails.name);
+                $("[name='manufacturer']").val(consoleDetails.manufacturer);
+                $("[name='imageURL']").val(consoleDetails.imageURL);
+                $("[name='notes']").val(consoleDetails.notes);
+                $("[name='year']").val(consoleDetails.year);
+                $("[name='sales']").val(consoleDetails.sales);
+                $("[name='mediaType']").val(consoleDetails.mediaType);
+                $("[name='handheld']").prop("checked", consoleDetails.handheld);
             }
         }
     });
@@ -82,9 +82,8 @@ function resetDeleteButton() {
 
     $('#delete').click(event => {
         $.ajax({
-            url: '/console/delete',
+            url: '/console/delete/' + id,
             type: 'POST',
-            data: {"id": id},
             success: response => {
                 if (response === 'OK') {
                     window.location.href = "/client/index.html";

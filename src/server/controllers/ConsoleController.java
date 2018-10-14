@@ -1,16 +1,12 @@
 package server.controllers;
 
-import com.sun.jndi.cosnaming.CNCtx;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import server.Logger;
-import server.models.Category;
 import server.models.Console;
-import server.models.Game;
 import server.models.Manufacturer;
 import server.models.services.AdminService;
 import server.models.services.ConsoleService;
-import server.models.services.GameService;
 import server.models.services.ManufacturerService;
 
 import javax.ws.rs.*;
@@ -43,6 +39,10 @@ public class ConsoleController {
                         jc.put("manufacturer", m.getName());
                         break;
                     }
+                }
+
+                if (c.getImageURL().equals("")) {
+                    c.setImageURL("/client/img/none.png");
                 }
 
                 consoleList.add(jc);
@@ -90,7 +90,7 @@ public class ConsoleController {
     @Path("save/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    public String saveGame(  @PathParam("id") int id,
+    public String saveConsole(  @PathParam("id") int id,
                              @FormParam("name") String name,
                              @FormParam("manufacturer") String manufacturer,
                              @FormParam("mediaType") String mediaType,
@@ -144,10 +144,9 @@ public class ConsoleController {
     }
 
     @POST
-    @Path("delete")
-    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Path("delete/{id}")
     @Produces(MediaType.TEXT_PLAIN)
-    public String deleteConsole(@FormParam("id") int id,
+    public String deleteConsole(@PathParam("id") int id,
                                 @CookieParam("sessionToken") Cookie sessionCookie) {
 
         String currentUsername = AdminService.validateSessionCookie(sessionCookie);

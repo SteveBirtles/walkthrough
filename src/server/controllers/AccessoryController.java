@@ -19,8 +19,6 @@ public class AccessoryController {
     @Produces(MediaType.APPLICATION_JSON)
     public String listAccessories(@PathParam("id") int id) {
 
-        Logger.log(Integer.toString(id));
-
         Logger.log("/accessory/list - Getting all accessories from database");
         String status = AccessoryService.selectAllInto(Accessory.accessories);
 
@@ -36,7 +34,7 @@ public class AccessoryController {
 
                 if (a.getConsoleId() == id) {
 
-                    if (a.getImageURL() == null) {
+                    if (a.getImageURL().equals("")) {
                         a.setImageURL("/client/img/none.png");
                     }
 
@@ -87,10 +85,62 @@ public class AccessoryController {
     }
 
     @POST
-    @Path("delete")
+    @Path("save/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    public String deleteAccessory(@FormParam("id") int id,
+    public String saveAccessory(  @PathParam("id") int id,
+                                  @FormParam("consoleId") int consoleId,
+                                  @FormParam("category") String category,
+                                  @FormParam("description") String description,
+                                  @FormParam("quantity") int quantity,
+                                  @FormParam("thirdParty") String thirdParty,
+                                  @FormParam("imageURL") String imageURL,
+                                  @CookieParam("sessionToken") Cookie sessionCookie) {
+
+        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        if (currentUsername == null) return "Error: Invalid user session token";
+
+        int categoryId = 0;
+        CategoryService.selectAllInto(Category.categories);
+        for (Category c : Category.categories) {
+            if (c.getName().equals(category)) {
+                categoryId = c.getId();
+            }
+        }
+        if (categoryId == 0) {
+            int cId = Category.nextId();
+            Category newCategory = new Category(cId, category);
+            CategoryService.insert(newCategory);
+            categoryId = cId;
+        }
+
+        if (id == -1) {
+            AccessoryService.selectAllInto(Accessory.accessories);
+            id = Accessory.nextId();
+
+            Accessory newAccessory = new Accessory(id, categoryId, consoleId, description, quantity, thirdParty.equals("true"), imageURL);
+
+            return AccessoryService.insert(newAccessory);
+        } else {
+            Accessory existingAccessory = AccessoryService.selectById(id);
+            if (existingAccessory == null) {
+                return "That accessory doesn't appear to exist";
+            } else {
+
+                existingAccessory.setDescription(description);
+                existingAccessory.setQuantity(quantity);
+                existingAccessory.setCategoryId(categoryId);
+                existingAccessory.setImageURL(imageURL);
+                existingAccessory.setThirdParty(thirdParty.equals("true"));
+                return AccessoryService.update(existingAccessory);
+            }
+        }
+    }
+
+    @POST
+    @Path("delete/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String deleteAccessory(@PathParam("id") int id,
                                 @CookieParam("sessionToken") Cookie sessionCookie) {
 
         String currentUsername = AdminService.validateSessionCookie(sessionCookie);
@@ -103,8 +153,8 @@ public class AccessoryController {
         } else {
 
             int categoryCount = 0;
-            CategoryService.selectAllInto(Category.categorys);
-            for (Category c: Category.categorys) {
+            CategoryService.selectAllInto(Category.categories);
+            for (Category c: Category.categories) {
                 if (c.getId() == accessory.getCategoryId()) {
                     categoryCount++;
                 }

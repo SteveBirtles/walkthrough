@@ -34,22 +34,23 @@
 
     <form id="accessoryForm">
         <div class="form-group">
+            <input type="hidden" name="consoleId">
             <label class="pr-4">Category
-                <input type="text" class="form-control" id="category">
+                <input type="text" class="form-control" name="category">
             </label>
             <label class="pr-4">Description
-                <input type="text" class="form-control" id="description">
+                <input type="text" class="form-control" name="description">
             </label>
             <label class="pr-4">Quantity
-                <input type="text" class="form-control" id="quantity">
+                <input type="text" class="form-control" name="quantity">
             </label>
         </div>
         <div class="form-group">
             <label class="pr-4">Image URL
-                <input type="text" class="form-control" id="imageURL">
+                <input type="text" class="form-control" name="imageURL">
             </label>
             <label class="pr-4">Third Party
-                <input type="checkbox" class="form-control" id="thirdParty">
+                <input type="checkbox" class="form-control" name="thirdParty">
             </label>
             <div class="float-right"><button type="submit" class="btn btn-success">Save</button></div>
         </div>
