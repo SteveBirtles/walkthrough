@@ -93,7 +93,7 @@ public class AccessoryController {
                                   @FormParam("category") String category,
                                   @FormParam("description") String description,
                                   @FormParam("quantity") int quantity,
-                                  @FormParam("thirdParty") String thirdParty,
+                                  @DefaultValue("false") @FormParam("thirdParty") String thirdParty,
                                   @FormParam("imageURL") String imageURL,
                                   @CookieParam("sessionToken") Cookie sessionCookie) {
 
@@ -159,7 +159,7 @@ public class AccessoryController {
                     categoryCount++;
                 }
             }
-            if (categoryCount <= 0) {
+            if (categoryCount <= 1) {
                 CategoryService.deleteById(accessory.getCategoryId());
             }
 

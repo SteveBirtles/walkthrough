@@ -96,7 +96,7 @@ public class ConsoleController {
                              @FormParam("mediaType") String mediaType,
                              @FormParam("year") String year,
                              @FormParam("sales") String sales,
-                             @FormParam("handheld") String handheld,
+                             @DefaultValue("false") @FormParam("handheld") String handheld,
                              @FormParam("imageURL") String imageURL,
                              @FormParam("notes") String notes,
                              @CookieParam("sessionToken") Cookie sessionCookie) {
@@ -165,7 +165,7 @@ public class ConsoleController {
                     manufacturerCount++;
                 }
             }
-            if (manufacturerCount <= 0) {
+            if (manufacturerCount <= 1) {
                 ManufacturerService.deleteById(console.getManufacturerid());
             }
 

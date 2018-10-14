@@ -83,18 +83,20 @@ function resetDeleteButton() {
     $('#delete').css('visibility', 'visible');
 
     $('#delete').click(event => {
-        $.ajax({
-            url: '/game/delete/' + id,
-            type: 'POST',
-            success: response => {
-                if (response === 'OK') {
-                    window.location.href = $("#back").attr("href");
-                } else {
-                    alert(response);
+        let r = confirm("Are you sure you want to delete this game?");
+        if (r === true) {
+            $.ajax({
+                url: '/game/delete/' + id,
+                type: 'POST',
+                success: response => {
+                    if (response === 'OK') {
+                        window.location.href = $("#back").attr("href");
+                    } else {
+                        alert(response);
+                    }
                 }
-            }
-        });
-
+            });
+        }
     });
 
 }

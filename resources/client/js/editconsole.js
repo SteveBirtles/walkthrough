@@ -40,12 +40,12 @@ function loadConsole() {
             } else {
                 $("[name='name']").val(consoleDetails.name);
                 $("[name='manufacturer']").val(consoleDetails.manufacturer);
-                $("[name='imageURL']").val(consoleDetails.imageURL);
-                $("[name='notes']").val(consoleDetails.notes);
+                $("[name='mediaType']").val(consoleDetails.mediaType);
                 $("[name='year']").val(consoleDetails.year);
                 $("[name='sales']").val(consoleDetails.sales);
-                $("[name='mediaType']").val(consoleDetails.mediaType);
                 $("[name='handheld']").prop("checked", consoleDetails.handheld);
+                $("[name='imageURL']").val(consoleDetails.imageURL);
+                $("[name='notes']").val(consoleDetails.notes);
             }
         }
     });
@@ -81,18 +81,20 @@ function resetDeleteButton() {
     $('#delete').css('visibility', 'visible');
 
     $('#delete').click(event => {
-        $.ajax({
-            url: '/console/delete/' + id,
-            type: 'POST',
-            success: response => {
-                if (response === 'OK') {
-                    window.location.href = "/client/index.html";
-                } else {
-                    alert(response);
+        let r = confirm("Are you sure you want to delete this console?");
+        if (r === true) {
+            $.ajax({
+                url: '/console/delete/' + id,
+                type: 'POST',
+                success: response => {
+                    if (response === 'OK') {
+                        window.location.href = "/client/index.html";
+                    } else {
+                        alert(response);
+                    }
                 }
-            }
-        });
-
+            });
+        }
     });
 
 }

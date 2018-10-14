@@ -62,19 +62,22 @@ function resetForm() {
 
     form.unbind("submit");
     form.submit(event => {
-        event.preventDefault();
-        $.ajax({
-            url: '/accessory/save/' + id,
-            type: 'POST',
-            data: form.serialize(),
-            success: response => {
-                if (response === 'OK') {
-                    window.location.href = $("#back").attr("href");
-                } else {
-                    alert(response);
+        let r = confirm("Are you sure you want to delete this accessory?");
+        if (r === true) {
+            event.preventDefault();
+            $.ajax({
+                url: '/accessory/save/' + id,
+                type: 'POST',
+                data: form.serialize(),
+                success: response => {
+                    if (response === 'OK') {
+                        window.location.href = $("#back").attr("href");
+                    } else {
+                        alert(response);
+                    }
                 }
-            }
-        });
+            });
+        }
     });
 }
 
