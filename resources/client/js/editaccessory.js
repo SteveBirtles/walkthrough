@@ -24,7 +24,6 @@ function pageLoad() {
         loadAccessory();
         resetDeleteButton();
     } else {
-        alert(params['consoleId']);
         if (params['consoleId'] !== undefined) {
             $("[name='consoleId']").val(params['consoleId']);
         }
