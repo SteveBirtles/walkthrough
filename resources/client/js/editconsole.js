@@ -78,23 +78,24 @@ function resetForm() {
 
 function resetDeleteButton() {
 
-    $('#delete').css('visibility', 'visible');
-
-    $('#delete').click(event => {
-        let r = confirm("Are you sure you want to delete this console?");
-        if (r === true) {
-            $.ajax({
-                url: '/console/delete/' + id,
-                type: 'POST',
-                success: response => {
-                    if (response === 'OK') {
-                        window.location.href = "/client/index.html";
-                    } else {
-                        alert(response);
+    $('#delete')
+        .css('visibility', 'visible')
+        .click(event => {
+            let r = confirm("Are you sure you want to delete this console?");
+            if (r === true) {
+                $.ajax({
+                    url: '/console/delete/' + id,
+                    type: 'POST',
+                    success: response => {
+                        if (response === 'OK') {
+                            window.location.href = "/client/index.html";
+                        } else {
+                            alert(response);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
-    });
+    );
 
 }

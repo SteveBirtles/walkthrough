@@ -89,8 +89,8 @@ public class AccessoryController {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
     public String saveAccessory(  @PathParam("id") int id,
-                                  @FormParam("consoleId") int consoleId,
                                   @FormParam("category") String category,
+                                  @FormParam("consoleId") int consoleId,
                                   @FormParam("description") String description,
                                   @FormParam("quantity") int quantity,
                                   @DefaultValue("false") @FormParam("thirdParty") String thirdParty,
@@ -118,22 +118,31 @@ public class AccessoryController {
             AccessoryService.selectAllInto(Accessory.accessories);
             id = Accessory.nextId();
 
-            Accessory newAccessory = new Accessory(id, categoryId, consoleId, description, quantity, thirdParty.equals("true"), imageURL);
+            Accessory newAccessory = new Accessory(id,
+                                                   categoryId,
+                                                   consoleId,
+                                                   description,
+                                                   quantity,
+                                                   thirdParty.equals("true"),
+                                                   imageURL);
 
             return AccessoryService.insert(newAccessory);
+
         } else {
+
             Accessory existingAccessory = AccessoryService.selectById(id);
             if (existingAccessory == null) {
                 return "That accessory doesn't appear to exist";
             } else {
 
+                existingAccessory.setCategoryId(categoryId);
                 existingAccessory.setDescription(description);
                 existingAccessory.setQuantity(quantity);
-                existingAccessory.setCategoryId(categoryId);
-                existingAccessory.setImageURL(imageURL);
                 existingAccessory.setThirdParty(thirdParty.equals("true"));
+                existingAccessory.setImageURL(imageURL);
                 return AccessoryService.update(existingAccessory);
             }
+            
         }
     }
 

@@ -20,11 +20,11 @@ function pageLoad() {
         id = params['id'];
     }
 
-    if (id !== -1) {
+    if (id !== '-1') {
         loadAccessory();
         resetDeleteButton();
     } else {
-        consoleId = Cookies.get('consoleId');
+        alert(params['consoleId']);
         if (params['consoleId'] !== undefined) {
             $("[name='consoleId']").val(params['consoleId']);
         }
@@ -62,34 +62,11 @@ function resetForm() {
 
     form.unbind("submit");
     form.submit(event => {
-        let r = confirm("Are you sure you want to delete this accessory?");
-        if (r === true) {
-            event.preventDefault();
-            $.ajax({
-                url: '/accessory/save/' + id,
-                type: 'POST',
-                data: form.serialize(),
-                success: response => {
-                    if (response === 'OK') {
-                        window.location.href = $("#back").attr("href");
-                    } else {
-                        alert(response);
-                    }
-                }
-            });
-        }
-    });
-}
-
-
-function resetDeleteButton() {
-
-    $('#delete').css('visibility', 'visible');
-
-    $('#delete').click(event => {
+        event.preventDefault();
         $.ajax({
-            url: '/accessory/delete/' + id,
+            url: '/accessory/save/' + id,
             type: 'POST',
+            data: form.serialize(),
             success: response => {
                 if (response === 'OK') {
                     window.location.href = $("#back").attr("href");
@@ -98,7 +75,30 @@ function resetDeleteButton() {
                 }
             }
         });
-
     });
+}
+
+
+function resetDeleteButton() {
+
+    $('#delete')
+        .css('visibility', 'visible')
+        .click(event => {
+            let r = confirm("Are you sure you want to delete this accessory?");
+            if (r === true) {
+                $.ajax({
+                    url: '/accessory/delete/' + id,
+                    type: 'POST',
+                    success: response => {
+                        if (response === 'OK') {
+                            window.location.href = $("#back").attr("href");
+                        } else {
+                            alert(response);
+                        }
+                    }
+                });
+            }
+        }
+    );
 
 }

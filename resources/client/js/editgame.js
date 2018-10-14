@@ -21,11 +21,10 @@ function pageLoad() {
         id = parseInt(params['id']);
     }
 
-    if (id !== -1) {
+    if (id !== '-1') {
         loadGame();
         resetDeleteButton();
     } else {
-        consoleId = Cookies.get('consoleId');
         if (params['consoleId'] !== undefined) {
             $("[name='consoleId']").val(params['consoleId']);
         }
@@ -80,23 +79,24 @@ function resetForm() {
 
 function resetDeleteButton() {
 
-    $('#delete').css('visibility', 'visible');
-
-    $('#delete').click(event => {
-        let r = confirm("Are you sure you want to delete this game?");
-        if (r === true) {
-            $.ajax({
-                url: '/game/delete/' + id,
-                type: 'POST',
-                success: response => {
-                    if (response === 'OK') {
-                        window.location.href = $("#back").attr("href");
-                    } else {
-                        alert(response);
+    $('#delete')
+        .css('visibility', 'visible')
+        .click(event => {
+            let r = confirm("Are you sure you want to delete this game?");
+            if (r === true) {
+                $.ajax({
+                    url: '/game/delete/' + id,
+                    type: 'POST',
+                    success: response => {
+                        if (response === 'OK') {
+                            window.location.href = $("#back").attr("href");
+                        } else {
+                            alert(response);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
-    });
+    );
 
 }

@@ -69,10 +69,9 @@ public class ConsoleController {
         Console c = ConsoleService.selectById(id);
         if (c != null) {
 
-            Manufacturer m = ManufacturerService.selectById(c.getManufacturerid());
-
             JSONObject cj = c.toJSON();
 
+            Manufacturer m = ManufacturerService.selectById(c.getManufacturerid());
             cj.put("manufacturer", m.getName());
 
             return cj.toString();
@@ -90,16 +89,16 @@ public class ConsoleController {
     @Path("save/{id}")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    public String saveConsole(  @PathParam("id") int id,
-                             @FormParam("name") String name,
-                             @FormParam("manufacturer") String manufacturer,
-                             @FormParam("mediaType") String mediaType,
-                             @FormParam("year") String year,
-                             @FormParam("sales") String sales,
-                             @DefaultValue("false") @FormParam("handheld") String handheld,
-                             @FormParam("imageURL") String imageURL,
-                             @FormParam("notes") String notes,
-                             @CookieParam("sessionToken") Cookie sessionCookie) {
+    public String saveConsole(@PathParam("id") int id,
+                              @FormParam("manufacturer") String manufacturer,
+                              @FormParam("name") String name,
+                              @FormParam("mediaType") String mediaType,
+                              @FormParam("year") String year,
+                              @FormParam("sales") String sales,
+                              @DefaultValue("false") @FormParam("handheld") String handheld,
+                              @FormParam("imageURL") String imageURL,
+                              @FormParam("notes") String notes,
+                              @CookieParam("sessionToken") Cookie sessionCookie) {
 
         String currentUsername = AdminService.validateSessionCookie(sessionCookie);
         if (currentUsername == null) return "Error: Invalid user session token";
@@ -121,18 +120,28 @@ public class ConsoleController {
         if (id == -1) {
             ConsoleService.selectAllInto(Console.consoles);
             id = Console.nextId();
-            Console newConsole = new Console(id, manufacturerId, name, mediaType, year, sales, handheld.equals("true"), imageURL, notes);
+            Console newConsole = new Console(id,
+                                             manufacturerId,
+                                             name,
+                                             mediaType,
+                                             year,
+                                             sales,
+                                             handheld.equals("true"),
+                                             imageURL,
+                                             notes);
 
             return ConsoleService.insert(newConsole);
+
         } else {
+
             Console existingConsole = ConsoleService.selectById(id);
             if (existingConsole == null) {
                 return "That console doesn't appear to exist";
             } else {
 
+                existingConsole.setManufacturerid(manufacturerId);
                 existingConsole.setName(name);
                 existingConsole.setMediaType(mediaType);
-                existingConsole.setManufacturerid(manufacturerId);
                 existingConsole.setYear(year);
                 existingConsole.setSales(sales);
                 existingConsole.setHandheld(handheld.equals("true"));
@@ -140,6 +149,7 @@ public class ConsoleController {
                 existingConsole.setNotes(notes);
                 return ConsoleService.update(existingConsole);
             }
+
         }
     }
 

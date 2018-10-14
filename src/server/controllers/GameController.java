@@ -100,9 +100,17 @@ public class GameController {
         if (id == -1) {
             GameService.selectAllInto(Game.games);
             id = Game.nextId();
-            Game newGame = new Game(id, consoleId, name, sales, year, imageURL);
+            Game newGame = new Game(id,
+                                    consoleId,
+                                    name,
+                                    sales,
+                                    year,
+                                    imageURL);
+
             return GameService.insert(newGame);
+
         } else {
+
             Game existingGame = GameService.selectById(id);
             if (existingGame == null) {
                 return "That game doesn't appear to exist";
@@ -113,6 +121,7 @@ public class GameController {
                 existingGame.setImageURL(imageURL);
                 return GameService.update(existingGame);
             }
+
         }
     }
 
