@@ -7,6 +7,7 @@ import server.models.*;
 import server.models.services.*;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 
 @SuppressWarnings({"unchecked", "Duplicates"})
@@ -25,7 +26,12 @@ public class AccessoryController {
 
         if (status.equals("OK")) {
 
-            JSONArray accessoryList = new JSONArray();
+            JSONObject response = new JSONObject();
+
+            Console c = ConsoleService.selectById(id);
+            response.put("consoleName", c.getName());
+
+            JSONArray accessoriesList = new JSONArray();
             for (Accessory a: Accessory.accessories) {
 
                 if (a.getConsoleId() == id) {
@@ -35,13 +41,15 @@ public class AccessoryController {
                     }
 
                     JSONObject jg = a.toJSON();
-                    accessoryList.add(jg);
+                    accessoriesList.add(jg);
 
                 }
 
             }
 
-            return accessoryList.toString();
+            response.put("accessoriesList", accessoriesList);
+
+            return response.toString();
 
         } else {
             JSONObject response = new JSONObject();
@@ -56,6 +64,8 @@ public class AccessoryController {
     @Path("get/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getAccessory(@PathParam("id") int id) {
+
+        Logger.log("/accessory/get/"+ id + " - Getting accessory details from database");
 
         Accessory a = AccessoryService.selectById(id);
         if (a != null) {
@@ -76,5 +86,35 @@ public class AccessoryController {
 
     }
 
+    @POST
+    @Path("delete")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String deleteAccessory(@FormParam("id") int id,
+                                @CookieParam("sessionToken") Cookie sessionCookie) {
+
+        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        if (currentUsername == null) return "Error: Invalid user session token";
+
+        Logger.log("/console/delete - Console " + id);
+        Accessory accessory = AccessoryService.selectById(id);
+        if (accessory == null) {
+            return "That accessory doesn't appear to exist";
+        } else {
+
+            int categoryCount = 0;
+            CategoryService.selectAllInto(Category.categorys);
+            for (Category c: Category.categorys) {
+                if (c.getId() == accessory.getCategoryId()) {
+                    categoryCount++;
+                }
+            }
+            if (categoryCount <= 0) {
+                CategoryService.deleteById(accessory.getCategoryId());
+            }
+
+            return AccessoryService.deleteById(id);
+        }
+    }
 
 }

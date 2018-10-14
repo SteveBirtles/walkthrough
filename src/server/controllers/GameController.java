@@ -3,13 +3,11 @@ package server.controllers;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import server.Logger;
+import server.models.Category;
 import server.models.Console;
 import server.models.Game;
 import server.models.Manufacturer;
-import server.models.services.AdminService;
-import server.models.services.ConsoleService;
-import server.models.services.GameService;
-import server.models.services.ManufacturerService;
+import server.models.services.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Cookie;
@@ -29,6 +27,11 @@ public class GameController {
 
         if (status.equals("OK")) {
 
+            JSONObject response = new JSONObject();
+
+            Console c = ConsoleService.selectById(id);
+            response.put("consoleName", c.getName());
+
             JSONArray gameList = new JSONArray();
             for (Game g: Game.games) {
 
@@ -45,7 +48,9 @@ public class GameController {
 
             }
 
-            return gameList.toString();
+            response.put("gamesList", gameList);
+
+            return response.toString();
 
         } else {
             JSONObject response = new JSONObject();
@@ -60,6 +65,8 @@ public class GameController {
     @Path("get/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public String getGame(@PathParam("id") int id) {
+
+        Logger.log("/game/get/"+ id + " - Getting game details from database");
 
         Game g = GameService.selectById(id);
         if (g != null) {
@@ -98,7 +105,7 @@ public class GameController {
         } else {
             Game existingGame = GameService.selectById(id);
             if (existingGame == null) {
-                return "That message doesn't appear to exist";
+                return "That game doesn't appear to exist";
             } else {
                 existingGame.setName(name);
                 existingGame.setSales(sales);
@@ -106,6 +113,25 @@ public class GameController {
                 existingGame.setImageURL(imageURL);
                 return GameService.update(existingGame);
             }
+        }
+    }
+
+    @POST
+    @Path("delete")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String deleteGame(@FormParam("id") int id,
+                                @CookieParam("sessionToken") Cookie sessionCookie) {
+
+        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        if (currentUsername == null) return "Error: Invalid user session token";
+
+        Logger.log("/game/delete - Game " + id);
+        Game game = GameService.selectById(id);
+        if (game == null) {
+            return "That game doesn't appear to exist";
+        } else {
+            return GameService.deleteById(id);
         }
     }
 

@@ -3,13 +3,15 @@ function updateGamesList(id) {
     $.ajax({
         url: '/game/list/' + id,
         type: 'GET',
-        success: gameslist => {
+        success: response => {
 
-            if (gameslist.hasOwnProperty('error')) {
+            if (response.hasOwnProperty('error')) {
 
-                alert(gameslist.error);
+                alert(response.error);
 
             } else {
+
+                $('#console').text(response.consoleName);
 
                 let gamesHTML = `<div class="container">`
                                     + `<div class="row mb-2">`
@@ -20,14 +22,14 @@ function updateGamesList(id) {
                                     + `<div class="col-3 text-right bg-light font-weight-bold">Options</div>`
                                   + `</div>`;
 
-                for (let game of gameslist) {
+                for (let game of response.gamesList) {
                     gamesHTML += `<div class="row mb-2">`
                                     + `<div class="col-3">${game.name}</div>`
                                     + `<div class="col-1">${game.year}</div>`
                                     + `<div class="col-2">${game.sales}</div>`
                                     + `<div class="col-2 small"><a href="${game.imageURL}" target=”_blank”><img width="120" height="90" src="${game.imageURL}"></a></div>`
                                     + `<div class="col-3 text-right">`
-                                        + `<a class="btn btn-sm btn-success"  href="/client/game.html?id=${game.id}">Edit</a>`
+                                        + `<a class="btn btn-sm btn-success"  href="/client/editgame.html?id=${game.id}">Edit</a>`
                                     +`</div>`
                                  + `</div>`;
                 }
@@ -44,13 +46,13 @@ function updateGamesList(id) {
 
 function pageLoad() {
 
-    let params = getQueryStringParameters();
+    let currentPage = window.location.href;
+    Cookies.set("breadcrumb", currentPage);
 
-    $('#console').text(decodeURI(params['name']));
+    let params = getQueryStringParameters();
 
     updateGamesList(params['id']);
 
-    Cookies.set("lastGamesURL", window.location.href);
-    Cookies.set("consoleId", params['id']);
+    $("#new").attr("href", "/client/editgame.html?id=-1&consoleId=" + params['id'])
 
 }

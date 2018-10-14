@@ -1,17 +1,20 @@
 package server.controllers;
 
+import com.sun.jndi.cosnaming.CNCtx;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import server.Logger;
+import server.models.Category;
 import server.models.Console;
+import server.models.Game;
 import server.models.Manufacturer;
+import server.models.services.AdminService;
 import server.models.services.ConsoleService;
+import server.models.services.GameService;
 import server.models.services.ManufacturerService;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 
 @SuppressWarnings("unchecked")
@@ -61,6 +64,8 @@ public class ConsoleController {
     @Produces(MediaType.APPLICATION_JSON)
     public String getConsole(@PathParam("id") int id) {
 
+        Logger.log("/console/get/"+ id + " - Getting console details from database");
+
         Console c = ConsoleService.selectById(id);
         if (c != null) {
 
@@ -80,5 +85,93 @@ public class ConsoleController {
 
     }
 
+
+    @POST
+    @Path("save/{id}")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String saveGame(  @PathParam("id") int id,
+                             @FormParam("name") String name,
+                             @FormParam("manufacturer") String manufacturer,
+                             @FormParam("mediaType") String mediaType,
+                             @FormParam("year") String year,
+                             @FormParam("sales") String sales,
+                             @FormParam("handheld") String handheld,
+                             @FormParam("imageURL") String imageURL,
+                             @FormParam("notes") String notes,
+                             @CookieParam("sessionToken") Cookie sessionCookie) {
+
+        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        if (currentUsername == null) return "Error: Invalid user session token";
+
+        int manufacturerId = 0;
+        ManufacturerService.selectAllInto(Manufacturer.manufacturers);
+        for (Manufacturer m : Manufacturer.manufacturers) {
+            if (m.getName().equals(manufacturer)) {
+                manufacturerId = m.getId();
+            }
+        }
+        if (manufacturerId == 0) {
+            int mId = Manufacturer.nextId();
+            Manufacturer newManufacturer = new Manufacturer(mId, manufacturer);
+            ManufacturerService.insert(newManufacturer);
+            manufacturerId = mId;
+        }
+
+        if (id == -1) {
+            ConsoleService.selectAllInto(Console.consoles);
+            id = Console.nextId();
+            Console newConsole = new Console(id, manufacturerId, name, mediaType, year, sales, handheld.equals("true"), imageURL, notes);
+
+            return ConsoleService.insert(newConsole);
+        } else {
+            Console existingConsole = ConsoleService.selectById(id);
+            if (existingConsole == null) {
+                return "That console doesn't appear to exist";
+            } else {
+
+                existingConsole.setName(name);
+                existingConsole.setMediaType(mediaType);
+                existingConsole.setManufacturerid(manufacturerId);
+                existingConsole.setYear(year);
+                existingConsole.setSales(sales);
+                existingConsole.setHandheld(handheld.equals("true"));
+                existingConsole.setImageURL(imageURL);
+                existingConsole.setNotes(notes);
+                return ConsoleService.update(existingConsole);
+            }
+        }
+    }
+
+    @POST
+    @Path("delete")
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String deleteConsole(@FormParam("id") int id,
+                                @CookieParam("sessionToken") Cookie sessionCookie) {
+
+        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        if (currentUsername == null) return "Error: Invalid user session token";
+
+        Logger.log("/console/delete - Console " + id);
+        Console console = ConsoleService.selectById(id);
+        if (console == null) {
+            return "That console doesn't appear to exist";
+        } else {
+
+            int manufacturerCount = 0;
+            ManufacturerService.selectAllInto(Manufacturer.manufacturers);
+            for (Manufacturer m: Manufacturer.manufacturers) {
+                if (m.getId() == console.getManufacturerid()) {
+                    manufacturerCount++;
+                }
+            }
+            if (manufacturerCount <= 0) {
+                ManufacturerService.deleteById(console.getManufacturerid());
+            }
+
+            return ConsoleService.deleteById(id);
+        }
+    }
 
 }

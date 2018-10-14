@@ -44,6 +44,8 @@ public class AdminController {
     @Produces(MediaType.TEXT_PLAIN)
     public String getUser(@CookieParam("sessionToken") Cookie sessionCookie) {
 
+        Logger.log("/admin/check - Checking user against database");
+
         String currentUser = AdminService.validateSessionCookie(sessionCookie);
 
         if (currentUser == null) {

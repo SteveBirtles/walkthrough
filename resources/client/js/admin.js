@@ -1,6 +1,6 @@
 function resetLoginForm() {
 
-    if (Cookies.get('destination') === undefined) {
+    if (Cookies.get("destination") === undefined) {
         window.location.href = "/client/index.html";
     }
 
@@ -16,7 +16,7 @@ function resetLoginForm() {
                     alert(response);
                 } else {
                     Cookies.set("sessionToken", response);
-                    window.location.href = Cookies.get('destination');
+                    window.location.href = Cookies.get("destination");
                 }
             }
         });

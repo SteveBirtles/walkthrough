@@ -1,8 +1,12 @@
 let id = -1;
+let consoleId = 0;
 
 function pageLoad() {
 
-    let currentPage = window.location.pathname;
+    let lastPage =  Cookies.get("breadcrumb");
+    $("#back").attr("href", lastPage);
+
+    let currentPage = window.location.href;
     Cookies.set("destination", currentPage);
 
     checkLogin();
@@ -18,10 +22,13 @@ function pageLoad() {
     }
 
     if (id !== -1) {
-        $('#delete').css('visibility', 'visible');
         loadGame();
+        resetDeleteButton();
     } else {
-        $("[name='consoleId']").val(Cookies.get('consoleId'));
+        consoleId = Cookies.get('consoleId');
+        if (params['consoleId'] !== undefined) {
+            $("[name='consoleId']").val(params['consoleId']);
+        }
     }
 
     resetForm();
@@ -49,7 +56,6 @@ function loadGame() {
 
 }
 
-
 function resetForm() {
 
     const form = $('#gameForm');
@@ -63,11 +69,33 @@ function resetForm() {
             data: form.serialize(),
             success: response => {
                 if (response === 'OK') {
-                    window.location.href = Cookies.get("lastGamesURL");
+                    window.location.href = $("#back").attr("href");
                 } else {
                     alert(response);
                 }
             }
         });
     });
+}
+
+function resetDeleteButton() {
+
+    $('#delete').css('visibility', 'visible');
+
+    $('#delete').click(event => {
+        $.ajax({
+            url: '/game/delete',
+            type: 'POST',
+            data: {"id": id},
+            success: response => {
+                if (response === 'OK') {
+                    window.location.href = $("#back").attr("href");
+                } else {
+                    alert(response);
+                }
+            }
+        });
+
+    });
+
 }
