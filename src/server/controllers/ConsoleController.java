@@ -100,7 +100,7 @@ public class ConsoleController {
                               @FormParam("notes") String notes,
                               @CookieParam("sessionToken") Cookie sessionCookie) {
 
-        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        String currentUsername = AdminController.validateSessionCookie(sessionCookie);
         if (currentUsername == null) return "Error: Invalid user session token";
 
         int manufacturerId = 0;
@@ -159,7 +159,7 @@ public class ConsoleController {
     public String deleteConsole(@PathParam("id") int id,
                                 @CookieParam("sessionToken") Cookie sessionCookie) {
 
-        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        String currentUsername = AdminController.validateSessionCookie(sessionCookie);
         if (currentUsername == null) return "Error: Invalid user session token";
 
         Logger.log("/console/delete - Console " + id);

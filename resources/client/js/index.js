@@ -45,10 +45,3 @@ function updateConsoleList() {
     });
 
 }
-
-
-function pageLoad() {
-
-    updateConsoleList();
-
-}

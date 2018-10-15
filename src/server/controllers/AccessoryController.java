@@ -97,7 +97,7 @@ public class AccessoryController {
                                   @FormParam("imageURL") String imageURL,
                                   @CookieParam("sessionToken") Cookie sessionCookie) {
 
-        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        String currentUsername = AdminController.validateSessionCookie(sessionCookie);
         if (currentUsername == null) return "Error: Invalid user session token";
 
         int categoryId = 0;
@@ -152,7 +152,7 @@ public class AccessoryController {
     public String deleteAccessory(@PathParam("id") int id,
                                 @CookieParam("sessionToken") Cookie sessionCookie) {
 
-        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        String currentUsername = AdminController.validateSessionCookie(sessionCookie);
         if (currentUsername == null) return "Error: Invalid user session token";
 
         Logger.log("/console/delete - Console " + id);

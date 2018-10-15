@@ -1,5 +1,4 @@
 let id = -1;
-let consoleId = 0;
 
 function pageLoad() {
 
@@ -33,7 +32,6 @@ function pageLoad() {
     resetForm();
 
 }
-
 
 function loadGame() {
 

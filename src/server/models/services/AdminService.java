@@ -79,21 +79,4 @@ public class AdminService {
         }
     }
 
-    public static String validateSessionCookie(Cookie sessionCookie) {
-        if (sessionCookie != null) {
-            String token = sessionCookie.getValue();
-            String result = AdminService.selectAllInto(Admin.admins);
-            if (result.equals("OK")) {
-                for (Admin a : Admin.admins) {
-                    if (a.getSessionToken().equals(token)) {
-                        Logger.log("Valid session token received.");
-                        return a.getUsername();
-                    }
-                }
-            }
-        }
-        Logger.log("Error: Invalid user session token");
-        return null;
-    }
-
 }

@@ -94,7 +94,7 @@ public class GameController {
                              @FormParam("imageURL") String imageURL,
                              @CookieParam("sessionToken") Cookie sessionCookie) {
 
-        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        String currentUsername = AdminController.validateSessionCookie(sessionCookie);
         if (currentUsername == null) return "Error: Invalid user session token";
 
         if (id == -1) {
@@ -131,7 +131,7 @@ public class GameController {
     public String deleteGame(@PathParam("id") int id,
                                 @CookieParam("sessionToken") Cookie sessionCookie) {
 
-        String currentUsername = AdminService.validateSessionCookie(sessionCookie);
+        String currentUsername = AdminController.validateSessionCookie(sessionCookie);
         if (currentUsername == null) return "Error: Invalid user session token";
 
         Logger.log("/game/delete - Game " + id);

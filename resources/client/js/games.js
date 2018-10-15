@@ -50,9 +50,10 @@ function pageLoad() {
     Cookies.set("breadcrumb", currentPage);
 
     let params = getQueryStringParameters();
+    let id = params['id'];
 
-    updateGamesList(params['id']);
+    updateGamesList(id);
 
-    $("#new").attr("href", "/client/editgame.html?id=-1&consoleId=" + params['id'])
+    $("#new").attr("href", "/client/editgame.html?id=-1&consoleId=" + id)
 
 }

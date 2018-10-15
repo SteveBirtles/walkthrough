@@ -16,7 +16,7 @@ public class AdminController {
     @Path("login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.TEXT_PLAIN)
-    public String newMessage(@FormParam("username") String username,
+    public String attemptLogin(@FormParam("username") String username,
                              @FormParam("password") String password ) {
 
         Logger.log("/user/login - Attempt by " + username);
@@ -42,17 +42,35 @@ public class AdminController {
     @GET
     @Path("check")
     @Produces(MediaType.TEXT_PLAIN)
-    public String getUser(@CookieParam("sessionToken") Cookie sessionCookie) {
+    public String checkLogin(@CookieParam("sessionToken") Cookie sessionCookie) {
 
         Logger.log("/admin/check - Checking user against database");
 
-        String currentUser = AdminService.validateSessionCookie(sessionCookie);
+        String currentUser = validateSessionCookie(sessionCookie);
 
         if (currentUser == null) {
+            Logger.log("Error: Invalid user session token");
             return "";
         } else {
             return currentUser;
         }
+    }
+
+
+    public static String validateSessionCookie(Cookie sessionCookie) {
+        if (sessionCookie != null) {
+            String token = sessionCookie.getValue();
+            String result = AdminService.selectAllInto(Admin.admins);
+            if (result.equals("OK")) {
+                for (Admin a : Admin.admins) {
+                    if (a.getSessionToken().equals(token)) {
+                        Logger.log("Valid session token received.");
+                        return a.getUsername();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }
